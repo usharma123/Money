@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+ENV/
+.env/
+.venv/
+
+# OS files
+.DS_Store
+
+# Data files
+*.csv
+*.tsv
+*.log 
