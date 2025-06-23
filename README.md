@@ -28,3 +28,138 @@ pip install -r requirements.txt
 - numpy
 - pandas
 - matplotlib 
+
+## Statistical Tests & Diagnostics
+
+This project applies several statistical tests and diagnostics to ensure the robustness and validity of financial time series modeling. Below is an overview of each test, its purpose, and its significance in finance:
+
+---
+
+### 1. Augmented Dickey-Fuller (ADF) Test
+- **Purpose:** Tests for stationarity in a time series (i.e., whether statistical properties like mean and variance are constant over time).
+- **How it works:** The null hypothesis is that the series has a unit root (is non-stationary). A low p-value (< 0.05) suggests the series is stationary.
+- **Why it matters in finance:** Many financial models (e.g., ARIMA) require stationary data. Non-stationary price series can lead to spurious results and unreliable forecasts.
+- **Usage in notebook:** Used to determine if differencing is needed before ARIMA modeling.
+
+**Example:**
+```python
+from statsmodels.tsa.stattools import adfuller
+result = adfuller(price_series)
+print(f"ADF Statistic: {result[0]:.4f}")
+print(f"p-value: {result[1]:.4f}")
+```
+*If p-value < 0.05, the series is stationary.*
+
+---
+
+### 2. KPSS (Kwiatkowski-Phillips-Schmidt-Shin) Test
+- **Purpose:** Also tests for stationarity, but with the opposite null hypothesis (that the series is stationary).
+- **How it works:** A low p-value (< 0.05) suggests the series is non-stationary.
+- **Why it matters in finance:** Used in conjunction with ADF to robustly assess stationarity, reducing the risk of misclassification.
+- **Usage in notebook:** Confirms the result of the ADF test for optimal differencing.
+
+**Example:**
+```python
+from statsmodels.tsa.stattools import kpss
+stat, p_value, _, _ = kpss(price_series, regression='c')
+print(f"KPSS Statistic: {stat:.4f}")
+print(f"p-value: {p_value:.4f}")
+```
+*If p-value < 0.05, the series is non-stationary.*
+
+---
+
+### 3. Ljung-Box Test
+- **Purpose:** Checks for autocorrelation in the residuals of a fitted time series model.
+- **How it works:** The null hypothesis is that residuals are independently distributed. A high p-value (> 0.05) means no significant autocorrelation remains.
+- **Why it matters in finance:** Ensures that the model has captured all predictable structure; residual autocorrelation indicates model inadequacy.
+- **Usage in notebook:** Diagnostic for ARIMA model residuals.
+
+**Example:**
+```python
+from statsmodels.stats.diagnostic import acorr_ljungbox
+lb_test = acorr_ljungbox(residuals, lags=[10], return_df=True)
+print(lb_test)
+```
+*Look for p-value > 0.05 for no autocorrelation in residuals.*
+
+---
+
+### 4. Jarque-Bera Test
+- **Purpose:** Tests whether residuals are normally distributed.
+- **How it works:** The null hypothesis is that the data is normally distributed. A high p-value (> 0.05) supports normality.
+- **Why it matters in finance:** Many statistical inference techniques assume normality of errors. Non-normal residuals can indicate model misspecification or the presence of outliers.
+- **Usage in notebook:** Diagnostic for ARIMA model residuals.
+
+**Example:**
+```python
+from scipy.stats import jarque_bera
+jb_stat, jb_pvalue = jarque_bera(residuals)
+print(f"Jarque-Bera p-value: {jb_pvalue:.4f}")
+```
+*Look for p-value > 0.05 for normal residuals.*
+
+---
+
+### 5. Model Evaluation Metrics
+| Metric | Description | Financial Significance |
+|--------|-------------|-----------------------|
+| **MAE** (Mean Absolute Error) | Average absolute difference between predicted and actual values | Measures average prediction error in the same units as the data |
+| **MSE** (Mean Squared Error) | Average squared difference between predicted and actual values | Penalizes larger errors more heavily; sensitive to outliers |
+| **RMSE** (Root Mean Squared Error) | Square root of MSE | Interpretable in original units; commonly used in finance |
+| **R²** (Coefficient of Determination) | Proportion of variance explained by the model | Indicates goodness-of-fit; higher is better |
+
+**Example:**
+```python
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+mae = mean_absolute_error(y_true, y_pred)
+mse = mean_squared_error(y_true, y_pred)
+rmse = mse ** 0.5
+r2 = r2_score(y_true, y_pred)
+print(f"MAE: {mae:.2f}, MSE: {mse:.2f}, RMSE: {rmse:.2f}, R²: {r2:.2f}")
+```
+
+---
+
+### 6. Autocorrelation & Partial Autocorrelation (ACF/PACF)
+- **Purpose:** Visual tools to identify the presence and order of autocorrelation in time series data.
+- **Why it matters in finance:** Helps in selecting appropriate ARIMA model parameters (p, q) and diagnosing model fit.
+
+**Example:**
+```python
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+import matplotlib.pyplot as plt
+plot_acf(price_series, lags=40)
+plt.title('Autocorrelation Function (ACF)')
+plt.show()
+plot_pacf(price_series, lags=40)
+plt.title('Partial Autocorrelation Function (PACF)')
+plt.show()
+```
+*Look for significant spikes to determine AR (PACF) and MA (ACF) orders.*
+
+---
+
+### 7. Rolling Mean & Standard Deviation
+- **Purpose:** Detects structural breaks, regime shifts, or volatility changes in financial time series.
+- **Why it matters in finance:** Financial markets often experience changing volatility and mean shifts, which can impact model performance and risk assessment.
+
+**Example:**
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+rolling_mean = pd.Series(price_series).rolling(window=50).mean()
+rolling_std = pd.Series(price_series).rolling(window=50).std()
+plt.plot(price_series, label='Price')
+plt.plot(rolling_mean, label='Rolling Mean', color='red')
+plt.plot(rolling_std, label='Rolling Std', color='orange')
+plt.legend()
+plt.title('Rolling Mean & Std Deviation')
+plt.show()
+```
+*Look for shifts in mean or volatility as indicators of regime change or instability.*
+
+---
+
+**In summary:**
+These statistical tests and diagnostics are essential for building reliable, interpretable, and robust financial models. They help ensure that the assumptions underlying time series models are met, and that the results are meaningful for financial decision-making. 
