@@ -162,4 +162,67 @@ plt.show()
 ---
 
 **In summary:**
-These statistical tests and diagnostics are essential for building reliable, interpretable, and robust financial models. They help ensure that the assumptions underlying time series models are met, and that the results are meaningful for financial decision-making. 
+These statistical tests and diagnostics are essential for building reliable, interpretable, and robust financial models. They help ensure that the assumptions underlying time series models are met, and that the results are meaningful for financial decision-making.
+
+## Neural Network Techniques
+
+This project explores several advanced neural network architectures for financial time series forecasting. Below are the main techniques used, with explanations of their structure, application, and relevance to finance:
+
+---
+
+### 1. Long Short-Term Memory (LSTM) Networks
+- **What:** LSTM is a type of recurrent neural network (RNN) designed to capture long-term dependencies in sequential data by using memory cells and gating mechanisms.
+- **Usage in notebook:** Used as a baseline neural network for predicting stock prices based on historical sequences of features.
+- **Strengths:** Good at modeling temporal dependencies and handling vanishing gradient problems common in standard RNNs.
+- **Weaknesses:** Can be slow to train and may overfit on small datasets.
+- **Financial relevance:** Well-suited for capturing patterns in financial time series, such as trends and cycles.
+
+---
+
+### 2. Gated Recurrent Unit (GRU) Networks
+- **What:** GRU is a simplified variant of LSTM that uses fewer gates, making it computationally more efficient while retaining the ability to model sequential dependencies.
+- **Usage in notebook:** Implemented as an alternative to LSTM for stock price prediction.
+- **Strengths:** Faster training and often similar performance to LSTM; less prone to overfitting on small data.
+- **Weaknesses:** May be less expressive than LSTM for very complex patterns.
+- **Financial relevance:** Effective for time series with moderate complexity and limited data.
+
+---
+
+### 3. Bidirectional GRU
+- **What:** A GRU network that processes input sequences in both forward and backward directions, allowing the model to learn from both past and future context.
+- **Usage in notebook:** Used to enhance the model's ability to capture context in financial sequences.
+- **Strengths:** Can improve accuracy by leveraging information from the entire sequence.
+- **Weaknesses:** More computationally intensive; not always suitable for real-time prediction.
+- **Financial relevance:** Useful for retrospective analysis and scenarios where future context is available.
+
+---
+
+### 4. CNN-LSTM Hybrid
+- **What:** Combines 1D convolutional layers (CNN) for feature extraction with LSTM layers for sequence modeling.
+- **Usage in notebook:** Applied to capture both local patterns (via CNN) and long-term dependencies (via LSTM) in financial data.
+- **Strengths:** Can extract complex features and temporal relationships; often improves performance on noisy data.
+- **Weaknesses:** More complex architecture; requires careful tuning.
+- **Financial relevance:** Suitable for financial data with both short-term and long-term patterns (e.g., price spikes, trends).
+
+---
+
+### 5. Deep/Stacked LSTM & GRU Architectures
+- **What:** Multiple LSTM or GRU layers stacked to increase model capacity and capture hierarchical temporal features.
+- **Usage in notebook:** Used to build more expressive models for challenging prediction tasks.
+- **Strengths:** Can model complex, multi-scale temporal dependencies.
+- **Weaknesses:** Higher risk of overfitting; longer training times.
+- **Financial relevance:** Useful for modeling intricate market dynamics and multi-factor influences.
+
+---
+
+### 6. Ensemble Neural Networks
+- **What:** Combines predictions from multiple neural network models (e.g., LSTM, GRU, CNN-LSTM) to improve robustness and accuracy.
+- **Usage in notebook:** Ensemble predictions are compared to individual model results for performance benchmarking.
+- **Strengths:** Reduces model variance and leverages strengths of different architectures.
+- **Weaknesses:** Increases computational cost and complexity.
+- **Financial relevance:** Helps mitigate overfitting and improves generalization in volatile markets.
+
+---
+
+**In summary:**
+Neural network techniques provide powerful tools for modeling complex, nonlinear relationships in financial time series. This project demonstrates and compares several architectures, highlighting their strengths and trade-offs for stock price prediction. 
