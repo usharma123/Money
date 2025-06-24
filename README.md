@@ -225,4 +225,213 @@ This project explores several advanced neural network architectures for financia
 ---
 
 **In summary:**
-Neural network techniques provide powerful tools for modeling complex, nonlinear relationships in financial time series. This project demonstrates and compares several architectures, highlighting their strengths and trade-offs for stock price prediction. 
+Neural network techniques provide powerful tools for modeling complex, nonlinear relationships in financial time series. This project demonstrates and compares several architectures, highlighting their strengths and trade-offs for stock price prediction.
+
+## Coding Workflow & Implementation
+
+This project follows a robust, modular workflow for financial time series modeling. Below is a step-by-step summary of the coding pipeline implemented in `modeling.ipynb`:
+
+---
+
+### 1. Data Loading & Preprocessing
+- **Load historical stock data** using APIs (e.g., yfinance) or CSV files.
+- **Handle missing values** (e.g., forward-fill) to ensure data integrity.
+- **Export and re-import data** as needed for reproducibility.
+
+---
+
+### 2. Feature Engineering
+- **Technical indicators:** Calculate moving averages (MA20), RSI, MACD, Bollinger Bands, etc.
+- **Lagged features:** Create lagged versions of price and indicators to capture temporal dependencies.
+- **Rolling statistics:** Compute rolling mean and standard deviation for volatility analysis.
+- **Advanced features:** Generate returns, log-returns, momentum, volatility ratios, and more for neural network models.
+
+---
+
+### 3. Data Splitting
+- **Train-test split:** Divide data into training and testing sets (commonly 80/20 split) to evaluate model generalization.
+- **Scaling:** Apply normalization or standardization (e.g., MinMaxScaler) for neural network input.
+
+---
+
+### 4. Classical Machine Learning Models
+- **Linear Regression:** Baseline model for price prediction.
+- **Random Forest Regression:** Ensemble method for capturing nonlinear relationships and feature importance.
+- **Support Vector Regression (SVR):** Kernel-based regression for complex patterns.
+- **Polynomial Regression:** Captures non-linear trends.
+- **Gradient Boosting:** Advanced ensemble for improved accuracy.
+- **ARIMA:** Time series model for autocorrelated data, with stationarity checks and parameter optimization.
+
+---
+
+### 5. Neural Network Models
+- **Simple LSTM/GRU:** Sequence models for capturing temporal dependencies.
+- **Bidirectional GRU:** Leverages both past and future context.
+- **CNN-LSTM Hybrid:** Combines convolutional feature extraction with sequence modeling.
+- **Deep/Stacked Architectures:** Multiple layers for hierarchical feature learning.
+- **Ensemble Models:** Combine predictions from multiple neural nets for robustness.
+- **Optimized GRU:** Advanced architecture with feature selection, regularization, and time series cross-validation.
+
+---
+
+### 6. Model Evaluation & Diagnostics
+- **Statistical tests:** ADF, KPSS, Ljung-Box, Jarque-Bera for model and data validation.
+- **Performance metrics:** MAE, MSE, RMSE, R² for quantitative assessment.
+- **Residual analysis:** Visual and statistical checks for model adequacy.
+- **Cross-validation:** Time series CV for robust neural network evaluation.
+
+---
+
+### 7. Model Comparison & Interpretation
+- **Compare all models** (classical and neural network) using consistent metrics.
+- **Feature importance:** Analyze which features drive predictions (especially in tree-based models).
+- **Visualization:** Plot predictions, residuals, and error distributions for interpretability.
+- **Overfitting checks:** Monitor training vs. testing error and use early stopping/regularization.
+
+---
+
+**In summary:**
+The notebook implements a full pipeline from raw data to advanced modeling and interpretation, using best practices in both classical and deep learning for financial time series analysis.
+
+## Model Code Snippets
+
+Below are concise code examples for each major model used in this project. These snippets illustrate the core implementation for quick reference and adaptation.
+
+---
+
+### Linear Regression (scikit-learn)
+```python
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+```
+
+---
+
+### Random Forest Regression (scikit-learn)
+```python
+from sklearn.ensemble import RandomForestRegressor
+rf = RandomForestRegressor(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+y_pred = rf.predict(X_test)
+```
+
+---
+
+### Support Vector Regression (SVR)
+```python
+from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+svr = SVR(kernel='rbf')
+svr.fit(X_train_scaled, y_train)
+y_pred = svr.predict(X_test_scaled)
+```
+
+---
+
+### Polynomial Regression
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
+poly_model = Pipeline([
+    ('poly', PolynomialFeatures(degree=2)),
+    ('linear', LinearRegression())
+])
+poly_model.fit(X_train, y_train)
+y_pred = poly_model.predict(X_test)
+```
+
+---
+
+### Gradient Boosting Regression
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+gb = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, random_state=42)
+gb.fit(X_train, y_train)
+y_pred = gb.predict(X_test)
+```
+
+---
+
+### ARIMA (statsmodels)
+```python
+from statsmodels.tsa.arima.model import ARIMA
+model = ARIMA(price_series, order=(p, d, q))
+model_fit = model.fit()
+pred = model_fit.forecast(steps=steps)
+```
+
+---
+
+### LSTM (Keras/TensorFlow)
+```python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Dropout
+model = Sequential([
+    LSTM(32, return_sequences=True, input_shape=(timesteps, features)),
+    Dropout(0.2),
+    LSTM(32),
+    Dropout(0.2),
+    Dense(16, activation='relu'),
+    Dense(1)
+])
+model.compile(optimizer='adam', loss='mse')
+model.fit(X_train, y_train, epochs=50, batch_size=16, validation_split=0.2)
+```
+
+---
+
+### GRU (Keras/TensorFlow)
+```python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import GRU, Dense, Dropout
+model = Sequential([
+    GRU(32, return_sequences=True, input_shape=(timesteps, features)),
+    Dropout(0.2),
+    GRU(32),
+    Dropout(0.2),
+    Dense(16, activation='relu'),
+    Dense(1)
+])
+model.compile(optimizer='adam', loss='mse')
+model.fit(X_train, y_train, epochs=50, batch_size=16, validation_split=0.2)
+```
+
+---
+
+### CNN-LSTM Hybrid (Keras/TensorFlow)
+```python
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv1D, LSTM, Dense, Dropout
+model = Sequential([
+    Conv1D(32, 3, activation='relu', input_shape=(timesteps, features)),
+    Conv1D(16, 3, activation='relu'),
+    Dropout(0.2),
+    LSTM(32),
+    Dropout(0.2),
+    Dense(32, activation='relu'),
+    Dense(1)
+])
+model.compile(optimizer='adam', loss='mse')
+model.fit(X_train, y_train, epochs=50, batch_size=16, validation_split=0.2)
+```
+
+---
+
+### Ensemble (Conceptual Example)
+```python
+# Assume models is a list of trained models
+preds = [model.predict(X_test) for model in models]
+ensemble_pred = np.mean(preds, axis=0)  # Simple averaging
+```
+
+---
+
+**Note:**
+- Replace `X_train`, `X_test`, `y_train`, `y_test`, `price_series`, `timesteps`, and `features` with your actual data variables.
+- For ARIMA, set `p`, `d`, `q`, and `steps` as appropriate for your use case. 
